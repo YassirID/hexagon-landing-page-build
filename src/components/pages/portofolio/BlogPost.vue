@@ -102,7 +102,6 @@ const getCarouselData = async () => {
       ...item,
       Kategori: item.Kategori ? item.Kategori.split(",")[0] : ""
     }));
-    console.log(newsCarouselData.value, "data berhasil diambil");
   }
 };
 

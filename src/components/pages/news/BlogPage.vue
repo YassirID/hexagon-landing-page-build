@@ -36,7 +36,6 @@ async function fetchProjectData(page = 1) {
   try {
     // Mengambil data postingan dari API dengan parameter halaman
     const response = await axiosInstance.get(`/api/News?page=${page}`);
-    console.log("Response:", response.data);
 
     if (response.data && response.data.data) {
       // Memetakan data API ke format yang diinginkan
@@ -51,7 +50,6 @@ async function fetchProjectData(page = 1) {
         alt: item.judul_news,
         timeAgo: "1 ",
       }));
-      console.log("Card Items:", cardItems.value);
       // Mengatur halaman saat ini dan total halaman dari respons API
       currentPage.value = response.data.current_page;
       totalPages.value = response.data.last_page;

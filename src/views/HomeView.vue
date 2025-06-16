@@ -30,7 +30,7 @@ onMounted(async () => {
         <OurProject />
         <Review />
         <News />
-        <Chart />
+        <!-- <Chart /> -->
         <Career />
         <Cta />
     </div>

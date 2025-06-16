@@ -21,7 +21,6 @@ const galleries = ref([]); // Menyimpan data klien
 // Fungsi untuk mengambil data galeri
 const getGallery = async () => {
   const data = await fetchGallery();
-  console.log(data); // Menampilkan data yang diterima dari API
   if (data.error) {
     console.error(data.error); // Menampilkan error yang datang dari service
   } else {
@@ -32,7 +31,6 @@ const getGallery = async () => {
         ...client,
         image: `${client.image}`, // Menambahkan URL
       }));
-      console.log(galleries.value);
     } else {
       console.error("Data yang diterima bukan array:", data);
     }

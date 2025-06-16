@@ -15,7 +15,6 @@ const getLatestData = async () => {
     console.error("Error fetching news:", data.error);
   } else {
     cardItems.value = data.data; // Sesuaikan dengan struktur API Laravel
-    console.log(cardItems.value, "Latest data berhasil diambil");
   }
 };
 
@@ -33,7 +32,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="w-full md:pt-40">
+  <div class="w-full pt-8 md:pt-4">
     <div class="px-[16px] md:px-[112px] md:mt-[56px]">
       <div class="mb-0">
         <div class="flex items-center justify-between w-full">

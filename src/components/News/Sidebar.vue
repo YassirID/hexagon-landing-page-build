@@ -73,12 +73,10 @@ const errorMessage = ref("");
 
 const getContact = async () => {
   const data = await fetchContact();
-  console.log(data);
   if (data.error) {
     errorMessage.value = data.error;
   } else {
     contactData.value = data;
-    console.log(contactData.value); // Periksa apakah semua properti seperti email, facebook, instagram, dan linkedin ada dan valid.
   }
 };
 

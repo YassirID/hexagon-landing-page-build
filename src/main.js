@@ -15,7 +15,6 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faArrowRight, faBars, faEllipsisVertical, faXmark } from '@fortawesome/free-solid-svg-icons'
 
 axios.get("/sanctum/csrf-cookie").then(() => {
-    console.log("CSRF cookie initialized.");
 }).catch(error => {
     console.error("Failed to initialize CSRF cookie:", error);
 });

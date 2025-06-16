@@ -18,7 +18,6 @@ const errorMessage = ref("");
 /* ------------------------------ */
 const getContact = async () => {
   const data = await fetchContact();
-  console.log(data);
   if (data.error) {
     // Jika terjadi error, simpan pesan error ke state errorMessage
     errorMessage.value = data.error;

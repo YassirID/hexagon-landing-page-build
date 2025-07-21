@@ -6,7 +6,7 @@ import ButtonOutline from "@/components/button/ButtonOutline.vue";
 import axiosInstance from "../../../axios";
 import { fetchJobDetail } from "@/service";
 
-const { proxy } = getCurrentInstance(); // akses instance
+const { proxy } = getCurrentInstance(); 
 const route = useRoute();
 const jobId = route.params.id;
 
@@ -48,8 +48,6 @@ onMounted(() => {
   fetchData();
   fetchLowonganKerja();
 });
-
-// Data form lamaran
 const formData = ref({
   fullName: "",
   email: "",
@@ -58,14 +56,12 @@ const formData = ref({
   summary: "",
   resume: null,
 });
-
-// Variabel reaktif tambahan untuk menyimpan detail file yang sudah diupload
 const selectedFile = ref(null);
 
 const handleFileUpload = (event) => {
-  const file = event.target.files[0]; // jika hanya 1 file saja
+  const file = event.target.files[0]; 
   formData.value.resume = file;
-  selectedFile.value = file; // simpan file untuk ditampilkan
+  selectedFile.value = file;
 };
 
 const handleSubmit = async () => {
@@ -91,8 +87,6 @@ const handleSubmit = async () => {
       text: "Application submitted successfully!",
       confirmButtonText: "OK",
     });
-
-    // Reset form dan file yang diupload
     formData.value = {
       fullName: "",
       email: "",
@@ -119,7 +113,6 @@ const handleSubmit = async () => {
 
 <template>
   <div class="px-[56px] md:px-[112px] dark:bg-black mb-[150px] pt-20 md:pt-16">
-    <!-- Header Section dengan Breadcrumbs -->
     <div class="flex flex-col gap-9 items-center text-center mb-[60px]">
       <h1 v-if="jobDetail" class="font-raleway text-[30px] md:text-[50px] font-bold text-gradient">
         {{ jobDetail.lowong_krj }}
@@ -142,16 +135,11 @@ const handleSubmit = async () => {
         </ul>
       </div>
     </div>
-
-    <!-- Status Loading / Error -->
     <div v-if="loading" class="text-center">Loading...</div>
     <div v-if="error" class="text-red-500 text-center">
       {{ error }}
     </div>
-
-    <!-- Main Content: Data pekerjaan dan Form Lamaran -->
     <div v-if="jobDetail && !loading" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-      <!-- Kolom kiri: Detail pekerjaan -->
       <div class="space-y-8">
         <div>
           <h2 class="text-2xl font-bold text-primary mb-4">Ringkasan</h2>
@@ -197,8 +185,6 @@ const handleSubmit = async () => {
         </div>
         <Button class="w-full md:w-auto">Apply Now</Button>
       </div>
-
-      <!-- Kolom kanan: Informasi pekerjaan & Form lamaran -->
       <div class="flex flex-col gap-10">
         <div class="space-y-4 border border-gray-300 p-[20px] rounded-2xl">
           <div class="flex gap-2">
@@ -218,8 +204,6 @@ const handleSubmit = async () => {
             <span class="text-gray-700 dark:text-gray-100">{{ jobDetail.ket_lowong.lokasi }}</span>
           </div>
         </div>
-
-        <!-- Form Lamaran -->
         <div class="bg-white dark:bg-gray-800 border border-gray-300 p-6 rounded-2xl">
           <h2 class="text-2xl font-bold text-primary mb-6">Lamar Sekarang!</h2>
           <form @submit.prevent="handleSubmit" class="space-y-4">
@@ -265,7 +249,7 @@ const handleSubmit = async () => {
                 >
                   {{ item }}
                 </option>
-              </select>xf
+              </select>
             </div>
             <div class="space-y-2">
               <label class="block">Perkenalan Singkat</label>
@@ -280,10 +264,9 @@ const handleSubmit = async () => {
               <div class="flex items-center justify-center w-full">
                 <label
                   for="dropzone-file"
-                  class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                  class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500"
                 >
                   <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                    <!-- Ikon dan petunjuk -->
                     <svg
                       class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
                       aria-hidden="true"
@@ -315,7 +298,6 @@ const handleSubmit = async () => {
                   />
                 </label>
               </div>
-              <!-- Tampilan file yang sudah dipilih -->
               <div v-if="selectedFile" class="mt-2 p-2 border rounded bg-gray-100 dark:bg-gray-700">
                 <p class="text-gray-700 dark:text-gray-200">File terpilih: <strong>{{ selectedFile.name }}</strong></p>
               </div>

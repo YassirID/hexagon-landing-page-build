@@ -1,38 +1,26 @@
 <script setup>
-/* ------------------------------ */
-/* Import Modul dan Inisialisasi  */
-/* ------------------------------ */
-// Mengimpor Application dari Spline Tool untuk rendering 3D scene
 import { Application } from '@splinetool/runtime';
-// Mengimpor lifecycle hooks dan fungsi reactive dari Vue
 import { onMounted, reactive, ref, onUnmounted } from 'vue';
-
-// Membuat ref untuk canvas yang akan digunakan oleh Spline
 const canvas = ref(null);
-
-// Membuat state reaktif untuk menyimpan informasi spline, termasuk URL scene untuk desktop dan mobile,
-// instance aplikasi Spline, dan status apakah scene sudah dimuat.
 const state = reactive({
     spline: {
-        desktopScene: 'https://prod.spline.design/Ry9Xir03d7uzegml/scene.splinecode', // Link untuk desktop
-        mobileScene: 'https://prod.spline.design/y22mr3XC-3wuEu5V/scene.splinecode', // Link untuk mobile
+        desktopScene: 'https://prod.spline.design/t5Pqly-sHJn3K-5I/scene.splinecode', // Link untuk desktop
+        mobileScene: 'https://prod.spline.design/8f82t5oV-Uwh6EST/scene.splinecode', // Link untuk mobile
         app: null,
         isLoaded: false,
     }
 });
 
-/* ------------------------------ */
-/* Fungsi Pemilihan Scene         */
-/* ------------------------------ */
-// Fungsi untuk menentukan URL scene berdasarkan ukuran layar
 const getSceneUrl = () => {
     return window.innerWidth >= 768 ? state.spline.desktopScene : state.spline.mobileScene;
 };
 
-/* ------------------------------ */
-/* Fungsi Penanganan Resize       */
-/* ------------------------------ */
-// Fungsi yang akan dipanggil ketika jendela diresize untuk mengubah ukuran canvas dan mereset aplikasi Spline
+requestAnimationFrame(() => {
+    if (typeof app.resize === 'function') {
+        app.resize();
+    }
+});
+
 const handleResize = () => {
     if (state.spline.app && canvas.value) {
         // Update canvas dimensions
@@ -45,55 +33,48 @@ const handleResize = () => {
         }
     }
 };
-
-/* ------------------------------ */
-/* Lifecycle: onMounted           */
-/* ------------------------------ */
-// Saat komponen dimuat, inisialisasi aplikasi Spline dan load scene yang sesuai
 onMounted(async () => {
-
-    try {
-        // Membuat instance Spline Application dengan canvas yang disediakan
+  try {
     const app = new Application(canvas.value);
-    // Menentukan scene URL berdasarkan ukuran layar
     const sceneUrl = getSceneUrl();
-    // Memuat scene dari URL yang telah dipilih
     await app.load(sceneUrl);
-    // Menyimpan instance aplikasi ke state dan menandai bahwa scene sudah dimuat
     state.spline.app = app;
     state.spline.isLoaded = true;
 
-    // Set ukuran awal canvas sesuai ukuran jendela
     canvas.value.width = window.innerWidth;
     canvas.value.height = window.innerHeight;
+    const resizeObserver = new ResizeObserver(() => {
+      requestAnimationFrame(() => {
+        if (typeof app.resize === 'function') {
+          app.resize();
+        }
+      });
+    });
+    resizeObserver.observe(canvas.value);
 
-    // Menambahkan event listener untuk menangani resize pada jendela
+    state.spline.resizeObserver = resizeObserver;
+
     window.addEventListener('resize', handleResize);
-    } catch (error) {
-        console.error('Error initializing Spline:', error);
-    }
+  } catch (error) {
+    console.error('Error initializing Spline:', error);
+  }
 });
 
-/* ------------------------------ */
-/* Lifecycle: onUnmounted         */
-/* ------------------------------ */
-// Saat komponen di-unmount, hapus event listener resize untuk mencegah memory leak
 onUnmounted(() => {
-    window.removeEventListener('resize', handleResize);
+  window.removeEventListener('resize', handleResize);
+  if (state.spline.resizeObserver) {
+    state.spline.resizeObserver.disconnect();
+  }
 });
+
 </script>
 
 <template>
-    <!-- Container Utama: Mengatur layout relatif, tinggi layar penuh dengan batas maksimum, margin bawah, dan padding atas -->
     <div class="relative h-screen max-h-[900px] mb-16 pt-24 md:pt-16">
-        <!-- Background Hero Section: Posisi absolut dengan background image dan canvas Spline -->
-        <div class="hero-section-bg absolute w-full h-full bg-no-repeat z-0 -mt-[48px]">
-            <!-- Canvas untuk rendering 3D scene oleh Spline -->
-            <canvas ref="canvas" class="w-full h-full" />
-            <!-- Overlay Gradient: Elemen span untuk memberikan efek gradient di bagian bawah -->
+        <div class="hero-section-bg absolute left-1/2 -translate-x-1/2 !w-[100vw] h-full bg-no-repeat z-0 -mt-[48px]">
+            <canvas ref="canvas" class="border dark:border-black border-white" ></canvas>
             <span class="bg-gradient-to-b absolute bottom-0 via-50% md:via-80% via-white dark:via-black/95 from-transparent w-full h-1/2 to-white dark:to-black z-[2]"></span>
         </div>
-        <!-- Scroll Down Indicator: Posisi absolute untuk menunjukkan scroll ke bawah -->
         <div class="absolute flex flex-col items-center -translate-x-1/2 left-1/2 via -bottom-16 gap-9">
             <div class="scrolldown" style="--color: #136FF8">
                 <div class="chevrons">
@@ -106,16 +87,11 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
-/* ------------------------------ */
-/* Styling Hero Section Background */
-/* ------------------------------ */
 .hero-section-bg {
     background-image: url(@/assets/Ornament.png);
     background-position-x: center;
     background-position-y: center;
 }
-
-/* Background untuk perangkat mobile */
 @media (max-width: 768px) {
     .hero-section-bg {
         background-image: url(@/assets/home-bg-mobile.png);
@@ -124,9 +100,6 @@ onUnmounted(() => {
     }
 }
 
-/* ------------------------------ */
-/* Styling Scroll Down Indicator  */
-/* ------------------------------ */
 .scrolldown {
     --color: white;
     --sizeX: 30px;

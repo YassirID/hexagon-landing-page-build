@@ -2,9 +2,7 @@
   <div
     class="flex flex-col md:flex-row items-start justify-between gap-10 px-4 md:px-28 py-16 bg-gradient"
   >
-    <!-- Left Info (tidak diubah) -->
     <div class="w-full space-y-6 md:w-1/2">
-      <!-- Judul dan deskripsi utama -->
       <h2 class="text-3xl font-bold text-blue-900 md:text-4xl dark:text-white">
         Have a project idea?<br />Drop me a line.
       </h2>
@@ -12,14 +10,10 @@
         Got a project? Drop me a line if you want to work together on something exciting.
         Even the smallest seed can grow into something beautiful.
       </p>
-
-      <!-- Informasi Kontak: Email -->
       <div class="flex items-center gap-3">
-        <!-- Ikon email di dalam lingkaran -->
         <div class="flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full">
           <Icon icon="fluent-color:mail-48" class="w-8 h-8 text-white" />
         </div>
-        <!-- Detail kontak berupa email -->
         <div>
           <p class="text-gray-600 dark:text-gray-400">Email us</p>
           <a
@@ -30,15 +24,11 @@
           </a>
         </div>
       </div>
-
-      <!-- Social Media Section -->
       <div class="space-y-3">
-        <!-- Judul kecil untuk koneksi sosial -->
         <div class="flex items-center gap-2.5 mt-8">
           <div class="w-8 h-0.5 bg-light-primary"></div>
           <h4 class="text-sm">Connect With Us</h4>
         </div>
-        <!-- Daftar tautan media sosial -->
         <div class="flex gap-4">
           <a
             href="https://www.youtube.com/@Hexagon-Inc"
@@ -72,7 +62,6 @@
       </div>
     </div>
 
-    <!-- Right Form -->
     <div class="w-full md:w-1/2 p-8 bg-white shadow-lg dark:bg-gray-800 rounded-xl">
       <h3 class="mb-6 text-xl font-semibold text-gray-900 dark:text-white">
         Request A Quote – let's work together.
@@ -123,8 +112,7 @@
 import Button from "../../button/Button.vue";
 import { ref } from "vue";
 import { Icon } from "@iconify/vue";
-import axiosInstance from "../../../axios"; // ganti fetchAPI jadi axiosInstance
-
+import axiosInstance from "../../../axios";
 const formData = ref({
   fullName: "",
   email: "",
@@ -134,7 +122,7 @@ const formData = ref({
 
 const handleSubmit = async () => {
   try {
-    const res = await axiosInstance.post('/api/communication/Store', formData.value); // gunakan .post dan kirim data form
+    const res = await axiosInstance.post('/api/communication/Store', formData.value); 
     const payload = res.data;
     alert(payload.message || 'Pesan berhasil dikirim!');
     formData.value = { fullName: '', email: '', subject: '', message: '' };

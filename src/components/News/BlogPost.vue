@@ -1,13 +1,13 @@
 <template>
   <div
     @click="redirectToPost"
-    class="flex items-start gap-4 p-4 bg-white border-b cursor-pointer border-black/30 dark:bg-black dark:border-white/30"
+    class="xl:flex xl:items-start space-y-5 xl:space-y-0 gap-4 p-4 bg-white border-b cursor-pointer border-black/30 dark:bg-black dark:border-white/30"
   >
-    <div class="h-40 overflow-hidden rounded-lg w-80">
+    <div class="h-full overflow-hidden rounded-lg w-full xl:w-80 xl:h-40">
       <img :src="image" alt="Blog Image" class="object-cover w-full h-full" />
     </div>
     <div class="flex flex-col justify-between w-full h-full">
-      <div>
+      <div class="space-y-5 xl:space-y-0">
         <p class="text-sm text-gray-500 dark:text-gray-400">
           <span class="font-bold align-middle text-light-primary dark:text-light-secondary">
             {{ category }}
@@ -19,18 +19,8 @@
       </div>
       <div class="flex items-center justify-between gap-2 mt-4 text-sm text-gray-500 dark:text-gray-400">
         <div class="flex gap-2">
-          <!-- <div
-            class="flex items-center justify-center w-5 h-5 text-xs text-white rounded-full font-extralight bg-light-primary dark:bg-light-secondary"
-          >
-            A
-          </div>
-          By {{ author }} -->
         </div>
         ·
-        <!-- <div>
-          <span>{{ comments }} Comments</span> ·
-          <span>{{ views }} Views</span>
-        </div> -->
       </div>
     </div>
   </div>
@@ -45,15 +35,13 @@ const props = defineProps({
   timeAgo: String,
   title: String,
   description: String,
-  // author: String,
-  // comments: Number,
-  // views: String,
-  id: Number, // ID untuk routing
+
+  id: Number, 
 });
 
 const router = useRouter();
 
 const redirectToPost = () => {
-  router.push(`/news/${props.id}`); // Langsung gunakan prop `id`
+  router.push(`/news/${props.id}`); 
 };
 </script>

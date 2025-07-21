@@ -1,5 +1,5 @@
 <script setup>
-import BlogPost from '@/components/pages/portofolio/BlogPost.vue';
+import BlogPost from '@/components/pages/portofolio/projectDetail.vue';
 import CTA from '@/components/pages/home/cta.vue';
 
 </script>

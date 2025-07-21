@@ -11,8 +11,9 @@ import App from './App.vue'
 import router from './router'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
 import { faArrowRight, faBars, faEllipsisVertical, faXmark } from '@fortawesome/free-solid-svg-icons'
+import FontAwesomeIcon from './plugins/fontawesome';
 
 axios.get("/sanctum/csrf-cookie").then(() => {
 }).catch(error => {
@@ -23,7 +24,9 @@ library.add(faEllipsisVertical, faBars, faXmark, faArrowRight)
 
 const app = createApp(App)
 
-app.component('font-awesome-icon', FontAwesomeIcon)
+app.component('font-awesome-icon', FontAwesomeIcon);
+
+
 app.use(createPinia())
 app.use(VueSweetalert2)
 app.use(router)

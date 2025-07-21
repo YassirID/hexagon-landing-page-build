@@ -1,12 +1,11 @@
 <template>
   <div class="space-y-8">
-    <!-- Search -->
     <div>
       <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200">Search</h3>
       <input type="text" placeholder="Search..." class="w-full px-3 py-2 mt-2 border rounded-lg dark:bg-gray-800 dark:text-gray-200" @input="(e) => onSearch(e.target.value)" />
     </div>
 
-    <!-- Categories -->
+
     <div>
       <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200">Categories</h3>
       <ul class="mt-2 space-y-2">
@@ -17,7 +16,7 @@
       </ul>
     </div>
 
-    <!-- Newsletter -->
+
     <div class="px-10 py-12 bg-gray-100 dark:bg-gray-800 rounded-2xl">
       <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Newsletter</h3>
       <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Register now to get latest updates on promotions & coupons.</p>
@@ -34,7 +33,7 @@
       <button class="w-full py-2 mt-3 text-white bg-blue-500 rounded-lg">Subscribe</button>
     </div>
 
-    <!-- Social Links -->
+
     <div>
       <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200">Social</h3>
       <div v-if="contactData" class="flex mt-2 space-x-4">
@@ -84,7 +83,7 @@ onMounted(() => {
   getContact();
 });
 
-// Define props
+
 const props = defineProps({
   categories: {
     type: Array,
@@ -98,6 +97,6 @@ const props = defineProps({
 
 const tags = ["Wordpress", "PHP", "HTML/CSS", "Figma", "Technology", "Marketing", "Consultation", "SEO", "Envato", "Psd"];
 
-// Define emits
+
 const emit = defineEmits(["selectCategory"]);
 </script>

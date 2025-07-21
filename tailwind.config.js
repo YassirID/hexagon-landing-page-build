@@ -21,7 +21,7 @@ export default {
         }
       },
       animation: {
-        wiggle: "wiggle 3s ease-in-out infinite", // Tambahkan animasi di sini
+        wiggle: "wiggle 3s ease-in-out infinite", 
       },
       height: {
         100: "400px",

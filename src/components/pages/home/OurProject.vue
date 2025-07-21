@@ -1,5 +1,4 @@
 <script setup>
-
 import Button from '@/components/button/Button.vue';
 import ButtonOutline from '@/components/button/ButtonOutline.vue';
 import { ref, onMounted, nextTick } from 'vue';
@@ -8,41 +7,47 @@ import axiosInstance from '@/axios';
 const cardItems = ref([]);
 const activeCard = ref(1);
 const projectContainer = ref(null);
+const error = ref(null);
 
 async function fetchProjectData() {
-    try {
-        const response = await axiosInstance.get('/api/Portofolio');
-        if (response.data && response.data.data) {
-            cardItems.value = response.data.data.map((item) => ({
-                tag: item.Kategori,
-                title: item.judul_porto,
-                description: item.ket_porto,
-                image: item.images.length ? item.images[0] : '',
-                alt: item.judul_porto
-            }));
-        }
-    } catch (error) {
-        console.error('Error fetching project data:', error);
+  try {
+    const response = await axiosInstance.get('/api/Portofolio');
+    if (response.data && response.data.data) {
+      cardItems.value = response.data.data.map((item) => ({
+        tag: item.Kategori,
+        title: item.judul_porto,
+        description: item.ket_porto,
+        image: item.images.length ? item.images[0] : '',
+        alt: item.judul_porto,
+      }));
     }
+  } catch (err) {
+    console.error('Error fetching project data:', err);
+    error.value = 'Gagal mengambil data proyek. Coba lagi nanti.'; // ✅ Set error
+  }
 }
 
 function handleScroll() {
-    if (projectContainer.value) {
-        const activeCardIndex = Math.ceil(projectContainer.value.scrollLeft / projectContainer.value.children[0].offsetWidth);
-        activeCard.value = activeCardIndex === 0 ? 1 : activeCardIndex;
-    }
+  if (projectContainer.value) {
+    const activeCardIndex = Math.ceil(
+      projectContainer.value.scrollLeft /
+        projectContainer.value.children[0].offsetWidth
+    );
+    activeCard.value = activeCardIndex === 0 ? 1 : activeCardIndex;
+  }
 }
 
 onMounted(() => {
-    fetchProjectData();
+  fetchProjectData();
 
-    nextTick(() => {
-        if (projectContainer.value) {
-            projectContainer.value.addEventListener('scroll', handleScroll);
-        }
-    });
+  nextTick(() => {
+    if (projectContainer.value) {
+      projectContainer.value.addEventListener('scroll', handleScroll);
+    }
+  });
 });
 </script>
+
 
 <template>
     <div class="bg-gradient-to-t from-[#F3F8FF] to-white dark:bg-gradient-to-t dark:from-black dark:to-black">
@@ -70,9 +75,9 @@ onMounted(() => {
 
         <div class="hidden md:block">
             <div class="relative overflow-hidden px-4">
-                <div class="flex justify-start gap-[24px] md:py-[56px] overflow-x-auto project-container" ref="projectContainer">
+                <div class="flex justify-start gap-[24px] md:py-[56px]  overflow-x-auto  snap-x project-container" ref="projectContainer">
                     <div v-for="(card, index) in cardItems" :key="index"
-                        class="px-[24px] w-[395px] rounded-2xl flex-shrink-0 hover:shadow-2xl transition-all duration-1000 mb-6"
+                        class="px-[24px] w-[395px] rounded-2xl flex-shrink-0 hover:shadow-2xl transition-all duration-1000 mb-6 snap-center"
                         :class="{ 'ml-[56px] md:ml-[112px]': index == 0, '': index + 1 == activeCard }">
                         <img v-if="card.image" :src="card.image" :alt="card.alt" class="mb-[24px] w-full aspect-[3/2] object-cover rounded-lg">
                         <div class="space-y-[16px]">
@@ -85,9 +90,10 @@ onMounted(() => {
                             <p class="text-[14px] text-gray-600 dark:text-gray-400 line-clamp-4">
                                 {{ card.description }}
                             </p>
-                            <RouterLink class="inline-block">
-                                <span>See Details</span>
+                            <RouterLink :to="`/portfolio/${card.slug}`" class="inline-block">
+                            <span>See Details</span>
                             </RouterLink>
+
                         </div>
                     </div>
                 </div>
@@ -110,8 +116,8 @@ onMounted(() => {
                             <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
                                 {{ card.description }}
                             </p>
-                            <RouterLink class="inline-block text-blue-500 hover:underline">
-                                <span>See Details</span>
+                            <RouterLink :to="`/portfolio/${card.slug}`" class="inline-block">
+                            <span>See Details</span>
                             </RouterLink>
                         </div>
                     </div>

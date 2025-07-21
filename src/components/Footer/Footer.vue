@@ -1,8 +1,8 @@
 <template>
-  <footer class="bg-white text-gray-800 dark:bg-black dark:text-gray-200 px-[20px] md:px-[112px] md:mt-10 mb-4 ">
+  <footer class="bg-white text-gray-800 dark:bg-black dark:text-gray-200 px-[20px] xl:px-[112px] md:mt-10 mb-4 ">
     <div class="container py-8 mx-auto">
-      <div class="flex flex-col justify-between md:flex-row">
-        <div class="flex flex-col w-full mb-6 md:mb-0 md:w-1/3">
+      <div class="flex flex-col justify-between xl:flex-row">
+        <div class="flex flex-col w-full mb-6 md:mb-0 xl:w-1/3">
           <div class="hidden md:block">
             <a href="/">
               <img src="@/assets/footer/logohexagon.svg" alt="Hexagon Logo" class="h-15" />
@@ -12,7 +12,7 @@
             Founded under the name PT. Hexagon Karyatama Indonesia, Hexagon Inc. is a company that operates in the field of digital artwork and IT solutions. With a focus on education and a commitment to providing high-quality services, we
             have established ourselves as a leading provider in our industry.
           </p>
-          <div class="flex mt-4 space-x-4 justify-center md:items-start">
+          <div class="flex mt-4 space-x-4 xl:justify-center justify-center md:justify-normal md:mb-10 xl:items-start pb-6">
             <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" class="group p-2 bg-transparent hover:bg-gradient-to-r from-light-primary to-[#68CDFF] rounded-full transition-all duration-300">
               <Icon icon="tabler:brand-facebook"  class="w-6 h-6 text-light-primary group-hover:text-white" />
             </a>
@@ -27,8 +27,8 @@
             </a>
           </div>
         </div>
-        <div class="md:flex flex-col justify-between w-full md:flex-row md:w-2/3 md:ml-20 hidden">
-          <div class="flex flex-col mb-6 mr-20 md:mb-0">
+        <div class="space-y-10 mb-16 md:space-y-0 md:mb-0 md:flex md:flex-row md:justify-between w-full xl:w-2/3 xl:ml-20">
+          <div class="flex flex-col mb-6 xl:mr-20 md:mb-0">
             <h2 class="mb-3 font-semibold text-sl">QUICK LINKS</h2>
             <ul class="flex-col mt-2 space-y-3">
               <li><a href="/about-us" class="text-blue-600 dark:text-blue-400 hover:underline">About us</a></li>
@@ -63,11 +63,12 @@
             </p>
           </div>
         </div>
-        <p class="text-sm text-center text-white">&copy; 2024 All rights reserved. Hexagon Inc.</p>
       </div>
     </div>
+ 
   </footer>
-  <div class="text-center border-t pt-3 pb-3 bg-gradient-to-r from-black via-[#0A58CA] to-[#0C57C3] hidden md:block">
+  <div class="bg-black hidden md:block text-black p-10 mb-20 xl:p-5 xl:mb-0">
+       <p class="text-sm text-center bg-black text-white">&copy; 2024 All rights reserved. Hexagon Inc.</p>
   </div>
 </template>
 

@@ -157,7 +157,7 @@ const closePopup = () => {
   @apply dark:text-white text-black gap-1.5 flex flex-col items-center justify-center p-4 transition-all dark:hover:text-gray-300 hover:text-light-primary;
 }
 
-/* Updated bottom-to-top animation */
+
 .slide-up-enter-active,
 .slide-up-leave-active {
   transition: all 0.3s ease-out;

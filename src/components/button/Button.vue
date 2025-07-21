@@ -1,15 +1,9 @@
-
-    <!-- <button
-        class="bg-[#146DF3] hover:bg-light-primary-2 flex items-center justify-center gap-2 px-5 py-3 rounded-full text-white">
-        <slot></slot>
-    </button> -->
-
 <style scoped>
   button {
    border: none;
    color: #fff;
    background-image: linear-gradient(30deg, #0400ff, #4ce3f7);
-   border-radius: 999px;
+   border-radius: 999px; 
    background-size: 100% auto;
    font-family: inherit;
    font-size: 17px;

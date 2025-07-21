@@ -4,7 +4,6 @@
     $props.class,
   )">
     <div class="relative isolate z-0 flex w-full flex-1 scale-y-125 items-center justify-center">
-      <!-- Conic Gradient -->
       <div :style="{
         backgroundImage: `conic-gradient(var(--conic-position), var(--tw-gradient-stops))`,
       }"
@@ -33,12 +32,12 @@
         class="absolute inset-auto z-50 h-36 w-[64rem] -translate-y-1/2 rounded-full bg-[#2125ff] opacity-50 blur-3xl">
       </div>
 
-      <!-- Spotlight -->
+
       <div
         class="animate-spotlight absolute inset-auto z-30 h-12 w-64 -translate-y-24 rounded-full bg-[#21ffe5] blur-2xl">
       </div>
 
-      <!-- Glowing Line -->
+
       <div class="animate-glowing-line absolute inset-auto z-50 h-0.5 w-[32rem] -translate-y-28 bg-[#1781eb]"></div>
 
       <div class="absolute inset-auto z-40 h-44 w-full translate-y-[-12.5rem] bg-[#2147A7] dark:bg-slate-950"></div>
@@ -71,25 +70,24 @@ const delayInSeconds = computed(() => `${props.delay}s`);
 </script>
 
 <style scoped>
-/* Spotlight Animation */
 .animate-spotlight {
   animation: spotlight-anim ease-in-out v-bind(durationInSeconds) forwards;
   animation-delay: v-bind(delayInSeconds);
 }
 
-/* Glowing Line Animation */
+
 .animate-glowing-line {
   animation: glowing-line-anim ease-in-out v-bind(durationInSeconds) forwards;
   animation-delay: v-bind(delayInSeconds);
 }
 
-/* Conic Gradient Animation */
+
 .animate-conic-gradient {
   animation: conic-gradient-anim ease-in-out v-bind(durationInSeconds) forwards;
   animation-delay: v-bind(delayInSeconds);
 }
 
-/* Keyframes for Spotlight */
+
 @keyframes spotlight-anim {
   from {
     width: 16rem;
@@ -100,7 +98,7 @@ const delayInSeconds = computed(() => `${props.delay}s`);
   }
 }
 
-/* Keyframes for Glowing Line */
+
 @keyframes glowing-line-anim {
   from {
     width: 32rem;
@@ -111,7 +109,7 @@ const delayInSeconds = computed(() => `${props.delay}s`);
   }
 }
 
-/* Keyframes for Conic Gradient */
+
 @keyframes conic-gradient-anim {
   from {
     opacity: 0.5;

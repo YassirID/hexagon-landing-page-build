@@ -45,7 +45,6 @@ const faqs = ref([
 
 <template>
   <div class="px-[56px] md:px-[112px] dark:bg-black min-h-screen py-20">
-    <!-- Header Section with animated underline -->
     <div class="flex flex-col gap-9 items-center text-center mb-16">
       <h1 class="font-raleway text-[30px] md:text-[50px] font-bold text-gradient relative inline-block">
         Frequently Asked Questions
@@ -60,7 +59,6 @@ const faqs = ref([
       </div>
     </div>
 
-    <!-- Enhanced FAQ Accordion -->
     <div class="max-w-4xl mx-auto space-y-4">
       <div 
         v-for="(faq, index) in faqs" 
@@ -107,7 +105,6 @@ const faqs = ref([
       </div>
     </div>
 
-    <!-- Enhanced Contact CTA with pattern -->
     <div class="max-w-4xl mx-auto mt-20 text-center relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/5 to-primary/10 p-12">
       <div class="absolute inset-0 opacity-10 dark:opacity-5 pattern-dots pattern-primary-500 pattern-size-4"></div>
       <div class="relative">

@@ -8,7 +8,6 @@ import Review from '@/components/pages/home/Review.vue';
 import Career from '@/components/pages/home/Career.vue';
 import News from '@/components/pages/home/News.vue';
 import Cta from '@/components/pages/home/cta.vue';
-import Chart from '@/components/pages/home/Chart.vue';
 import { onMounted } from 'vue';
 import axiosInstance from '../axios';
 
@@ -22,7 +21,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class=" dark:bg-black">
+    <div class=" dark:bg-black overflow-x-hidden">
         <Hero />
         <OurPartner />
         <AboutUs />

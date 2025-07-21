@@ -10,6 +10,7 @@ import CareerView from "@/views/CareerView.vue";
 import ContactView from "@/views/ContactView.vue";
 import PositionDetailView from "@/views/PositionDetailView.vue";
 import FaqView from "@/views/FaqView.vue";
+import ProjectDetail  from "@/components/pages/portofolio/projectDetail.vue";
 
 // Array routes
 const routes = [
@@ -61,7 +62,7 @@ const routes = [
   {
     path: "/portfolio/:id",
     name: "portfolio-detail",
-    component: PortofolioPostView,
+    component: ProjectDetail,
     props: true,
   },
   {
@@ -78,9 +79,9 @@ const router = createRouter({
   routes,
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
-      return savedPosition; // Jika ada posisi sebelumnya, kembali ke posisi itu
+      return savedPosition; 
     } else {
-      return { top: 0 }; // Scroll ke paling atas
+      return { top: 0 }; 
     }
   },
 });

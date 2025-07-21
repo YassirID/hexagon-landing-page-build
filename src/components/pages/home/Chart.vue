@@ -29,16 +29,16 @@ export default {
       new Chart(ctx, {
         type: "line",
         data: {
-          labels: data.labels, // Tanggal kunjungan
+          labels: data.labels, 
           datasets: [
             {
               label: "Jumlah Kunjungan",
-              data: data.data, // Jumlah kunjungan per hari
+              data: data.data, 
               borderColor: "blue",
-              backgroundColor: "rgba(0, 0, 0, 0)", // Transparan
+              backgroundColor: "rgba(0, 0, 0, 0)", 
               borderWidth: 2,
               fill: true,
-              tension: 0.3, // Membuat garis lebih halus
+              tension: 0.3,
             },
           ],
         },
@@ -65,7 +65,7 @@ export default {
           plugins: {
             legend: {
               labels: {
-                color: "black", // Warna teks legend
+                color: "black",
               },
             },
           },

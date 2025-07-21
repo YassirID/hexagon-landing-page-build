@@ -1,4 +1,3 @@
-<!-- ExpandableGallery.vue -->
 <template>
   <div :class="cn('flex justify-center w-full gap-2', props.class)">
     <div

@@ -12,7 +12,7 @@ import AboutUs from '../components/pages/home/AboutUs.vue';
 <template>
     <div class="dark:bg-black overflow-x-hidden">
         <Hero />
-        <AboutUs />
+        <AboutUs :show-services-detail-button="false" />
         <Benefits />
         <Why />
         <WhoWeAre />

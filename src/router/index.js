@@ -49,11 +49,12 @@ const routes = [
     name: "contact",
     component: ContactView,
   },
-  {
-    path: "/news/:id",
-    name: "news-detail",
-    component: BlogPostView,
-  },
+{
+  path: '/news/:id',
+  name: 'blog-post',
+  component: () => import('@/components/pages/news/BlogPost.vue'),
+  props: true
+},
   {
     path: "/faq",
     name: "faq",

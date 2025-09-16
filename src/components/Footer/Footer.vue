@@ -68,7 +68,7 @@
  
   </footer>
   <div class="bg-black hidden md:block text-black p-10 mb-20 xl:p-5 xl:mb-0">
-       <p class="text-sm text-center bg-black text-white">&copy; 2024 All rights reserved. Hexagon Inc.</p>
+       <p class="text-sm text-center bg-black text-white">&copy; 2025 All rights reserved. Hexagon Inc.</p>
   </div>
 </template>
 

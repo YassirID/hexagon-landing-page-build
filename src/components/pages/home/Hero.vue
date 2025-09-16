@@ -1,102 +1,96 @@
 <script setup>
 import { Application } from '@splinetool/runtime';
-import { onMounted, reactive, ref, onUnmounted } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
+
 const canvas = ref(null);
-const state = reactive({
-    spline: {
-        desktopScene: 'https://prod.spline.design/t5Pqly-sHJn3K-5I/scene.splinecode', // Link untuk desktop
-        mobileScene: 'https://prod.spline.design/8f82t5oV-Uwh6EST/scene.splinecode', // Link untuk mobile
-        app: null,
-        isLoaded: false,
-    }
-});
+const heroBg = ref(null);
+let app = null;
+let resizeObserver = null;
+let bgObserver = null;
 
-const getSceneUrl = () => {
-    return window.innerWidth >= 768 ? state.spline.desktopScene : state.spline.mobileScene;
+const desktopScene = 'https://prod.spline.design/t5Pqly-sHJn3K-5I/scene.splinecode';
+const mobileScene = 'https://prod.spline.design/8f82t5oV-Uwh6EST/scene.splinecode';
+
+const getSceneUrl = () => window.innerWidth >= 768 ? desktopScene : mobileScene;
+
+const loadSpline = async () => {
+  if (!canvas.value) return;
+
+  app = new Application(canvas.value);
+  await app.load(getSceneUrl());
 };
-
-requestAnimationFrame(() => {
-    if (typeof app.resize === 'function') {
-        app.resize();
-    }
-});
 
 const handleResize = () => {
-    if (state.spline.app && canvas.value) {
-        // Update canvas dimensions
-        canvas.value.width = window.innerWidth;
-        canvas.value.height = window.innerHeight;
-        
-        // Check if resize method exists before calling
-        if (typeof state.spline.app.resize === 'function') {
-            state.spline.app.resize();
-        }
-    }
+  // Ganti scene jika ukuran layar berubah cukup signifikan
+  const newScene = getSceneUrl();
+  if (app && newScene !== app.sceneUrl) {
+    app.dispose(); // Hancurkan scene lama
+    app = new Application(canvas.value); // Buat ulang
+    app.load(newScene); // Load scene baru
+  }
 };
-onMounted(async () => {
-  try {
-    const app = new Application(canvas.value);
-    const sceneUrl = getSceneUrl();
-    await app.load(sceneUrl);
-    state.spline.app = app;
-    state.spline.isLoaded = true;
 
-    canvas.value.width = window.innerWidth;
-    canvas.value.height = window.innerHeight;
-    const resizeObserver = new ResizeObserver(() => {
-      requestAnimationFrame(() => {
-        if (typeof app.resize === 'function') {
-          app.resize();
+onMounted(() => {
+  loadSpline(); 
+  if (heroBg.value) {
+    bgObserver = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('lazy-bg-loaded');
+            bgObserver.unobserve(entry.target);
+          }
         }
-      });
-    });
-    resizeObserver.observe(canvas.value);
-
-    state.spline.resizeObserver = resizeObserver;
-
-    window.addEventListener('resize', handleResize);
-  } catch (error) {
-    console.error('Error initializing Spline:', error);
+      },
+      { rootMargin: '200px' }
+    );
+    bgObserver.observe(heroBg.value);
   }
 });
+
 
 onUnmounted(() => {
   window.removeEventListener('resize', handleResize);
-  if (state.spline.resizeObserver) {
-    state.spline.resizeObserver.disconnect();
-  }
+  if (resizeObserver) resizeObserver.disconnect();
+  if (bgObserver) bgObserver.disconnect();
 });
-
 </script>
 
 <template>
-    <div class="relative h-screen max-h-[900px] mb-16 pt-24 md:pt-16">
-        <div class="hero-section-bg absolute left-1/2 -translate-x-1/2 !w-[100vw] h-full bg-no-repeat z-0 -mt-[48px]">
-            <canvas ref="canvas" class="border dark:border-black border-white" ></canvas>
-            <span class="bg-gradient-to-b absolute bottom-0 via-50% md:via-80% via-white dark:via-black/95 from-transparent w-full h-1/2 to-white dark:to-black z-[2]"></span>
-        </div>
-        <div class="absolute flex flex-col items-center -translate-x-1/2 left-1/2 via -bottom-16 gap-9">
-            <div class="scrolldown" style="--color: #136FF8">
-                <div class="chevrons">
-                    <div class="chevrondown"></div>
-                    <div class="chevrondown"></div>
-                </div>
-            </div>
-        </div>
+  <div class="relative h-screen max-h-[900px] mb-16 pt-24 md:pt-16">
+    <div ref="heroBg" class="w-full h-full hero-section-bg absolute left-1/2 -translate-x-1/2 bg-no-repeat z-0 -mt-[48px]">
+      <canvas
+        ref="canvas"
+        class=" border dark:border-black border-white"
+      ></canvas>
+      <span
+        class="bg-gradient-to-b absolute bottom-0 via-50% md:via-80% via-white dark:via-black/95 from-transparent w-full h-1/2 to-white dark:to-black z-[2]"
+      ></span>
     </div>
+    <div class="absolute flex flex-col items-center -translate-x-1/2 left-1/2 -bottom-16 gap-9">
+      <div class="scrolldown" style="--color: #136FF8">
+        <div class="chevrons">
+          <div class="chevrondown"></div>
+          <div class="chevrondown"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
+
 
 <style scoped>
 .hero-section-bg {
-    background-image: url(@/assets/Ornament.png);
+    /* background-image is moved to .lazy-bg-loaded to enable lazy loading */
     background-position-x: center;
     background-position-y: center;
 }
+.hero-section-bg.lazy-bg-loaded {
+    background-image: url(@/assets/Ornament.png);
+}
 @media (max-width: 768px) {
-    .hero-section-bg {
+    .hero-section-bg.lazy-bg-loaded {
         background-image: url(@/assets/home-bg-mobile.png);
-        background-position-x: center;
-        background-position-y: center;
     }
 }
 

@@ -1,6 +1,6 @@
 <template>
-  <div
-    @click="redirectToPost"
+  <RouterLink
+    :to="`/news/${id}`"
     class="xl:flex xl:items-start space-y-5 xl:space-y-0 gap-4 p-4 bg-white border-b cursor-pointer border-black/30 dark:bg-black dark:border-white/30"
   >
     <div class="h-full overflow-hidden rounded-lg w-full xl:w-80 xl:h-40">
@@ -20,28 +20,18 @@
       <div class="flex items-center justify-between gap-2 mt-4 text-sm text-gray-500 dark:text-gray-400">
         <div class="flex gap-2">
         </div>
-        ·
       </div>
     </div>
-  </div>
+  </RouterLink>
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router';
-
 const props = defineProps({
   image: String,
   category: String,
   timeAgo: String,
   title: String,
   description: String,
-
   id: Number, 
 });
-
-const router = useRouter();
-
-const redirectToPost = () => {
-  router.push(`/news/${props.id}`); 
-};
 </script>

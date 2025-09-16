@@ -1,39 +1,41 @@
 <script setup>
 import { Icon } from "@iconify/vue";
-import { ref, onMounted, watch } from "vue";
-import { useRoute } from 'vue-router';
+import { ref, onMounted, onUnmounted, watch } from "vue";
 
-const route = useRoute();
+ // atau sesuai dengan milikmu
+const isScrolled = ref(false);
 
+const isLightMode = ref(localStorage.getItem("theme") === "light");
 
-const isLightMode = ref(false);
-
-const toggleNavbar = ref(false);
-const toggleDropdown = ref(false);
-
-const toggleTheme = () => {
-  isLightMode.value = !isLightMode.value;
-  if (isLightMode.value) {
+const applyTheme = (isLight) => {
+  if (isLight) {
     document.documentElement.classList.remove("dark");
+    localStorage.setItem("theme", "light");
   } else {
     document.documentElement.classList.add("dark");
+    localStorage.setItem("theme", "dark");
   }
 };
 
-onMounted(() => {
-  const savedTheme = localStorage.getItem("theme");
-
-  if (savedTheme === "light") {
-    isLightMode.value = true;
-    document.documentElement.classList.remove("dark");
-  } else {
-    isLightMode.value = false;
-    document.documentElement.classList.add("dark");
-  }
-});
+const toggleTheme = () => {
+  isLightMode.value = !isLightMode.value;
+};
 
 watch(isLightMode, (newValue) => {
-  localStorage.setItem("theme", newValue ? "light" : "dark");
+  applyTheme(newValue);
+});
+
+const handleScroll = () => {
+  isScrolled.value = window.scrollY > 10;
+};
+
+onMounted(() => {
+  applyTheme(isLightMode.value);
+  window.addEventListener("scroll", handleScroll);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("scroll", handleScroll);
 });
 const navItems = [
   {
@@ -77,7 +79,16 @@ const closePopup = () => {
 </script>
 
 <template>
-  <nav class="bg-white h-[96px] w-full z-[999] dark:bg-black fixed" id="navbar">
+  <nav
+  :class="[
+    'fixed top-0 left-0 w-full h-[96px] z-[999] transition-all duration-300',
+    isScrolled
+      ? 'backdrop-blur-md bg-white/60 dark:bg-black/50 border-b border-white/30 dark:border-white/10 shadow-md'
+      : 'bg-white dark:bg-black border-b border-transparent'
+  ]"
+>
+
+
     <div class="px-8 md:px-[112px] h-full">
       <div class="flex items-center justify-between h-full w-full">
         <router-link :to="{ name: 'home' }">
@@ -90,21 +101,29 @@ const closePopup = () => {
             v-for="item in navItems"
             :key="item.route"
             :to="{ name: item.route }"
-            class="relative dark:text-white hover:after:content-[''] hover:after:block hover:after:absolute hover:after:left-1/2 hover:after:-translate-x-1/2 hover:after:w-2 after:transition-all after:duration-3x00 hover:after:h-2 hover:after:rounded-full hover:after:bg-light-primary hover:dark:after:bg-white hover:after:mt-4"
+            class="relative dark:text-white hover:after:content-[''] hover:after:block hover:after:absolute hover:after:left-1/2 hover:after:-translate-x-1/2 hover:after:w-2 after:transition-all after:duration-300 hover:after:h-2 hover:after:rounded-full hover:after:bg-light-primary hover:dark:after:bg-white hover:after:mt-4"
             active-class="font-medium mb-1 after:content-[''] after:block after:absolute after:left-1/2 after:-translate-x-1/2 after:w-2 after:h-2 after:transition-all after:duration-300 after:rounded-full after:bg-light-primary dark:after:bg-white after:mt-4"
           >
             <span>{{ item.text }}</span>
           </RouterLink>
         </div>
-        <div class="gap-2 flex">
-          <label class="flex items-center cursor-pointer">
-            <input type="checkbox" class="hidden peer" :checked="!isLightMode" @change="toggleTheme" />
-            <div
-              class="relative w-[42px] h-[24px] rounded-full outline outline-[2px] outline-light-primary peer-checked:after:translate-x-[18px] after:content-[''] after:absolute after:top-[4px] after:start-[4px] after:bg-light-secondary after:rounded-full after:h-4 after:w-4 after:transition-all dark:bg-[#04224D] dark:after:bg-white dark:outline-none"
-            ></div>
-          </label>
-          <span class="hidden lg:block">{{ isLightMode ? "Light Mode" : "Dark Mode" }}</span>
-        </div>
+       <div class="gap-2 flex items-center ml-8 flex-nowrap">
+  <label class="flex items-center cursor-pointer">
+    <input
+      type="checkbox"
+      class="hidden peer"
+      :checked="!isLightMode"
+      @change="toggleTheme"
+    />
+    <div
+      class="relative w-[42px] h-[24px] rounded-full outline outline-[2px] outline-light-primary peer-checked:after:translate-x-[18px] after:content-[''] after:absolute after:top-[4px] after:start-[4px] after:bg-light-secondary after:rounded-full after:h-4 after:w-4 after:transition-all dark:bg-[#04224D] dark:after:bg-white dark:outline-none"
+    ></div>
+  </label>
+  <span class="hidden lg:block whitespace-nowrap">
+    {{ isLightMode ? "Light Mode" : "Dark Mode" }}
+  </span>
+</div>
+
       </div>
     </div>
   </nav>
@@ -123,7 +142,7 @@ const closePopup = () => {
     </RouterLink>
     <button @click="togglePopup" class="nav-item">
       <div class="w-full  flex justify-center  mx-0 transition-all duration-300" :class="isPopupOpen == true ? 'bg-light-primary mx-3 rounded-full text-white' : ''">
-        <Icon icon="ion:filter" class="w-6 h-6 bg-"></Icon>
+        <Icon icon="ion:filter" class="w-6 h-6"></Icon>
       </div>
       Other
     </button>
@@ -179,4 +198,8 @@ const closePopup = () => {
 .btn-close {
   @apply mt-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all;
 }
+.shadow-glass {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
 </style>

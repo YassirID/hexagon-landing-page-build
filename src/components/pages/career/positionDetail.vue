@@ -6,7 +6,7 @@ import ButtonOutline from "@/components/button/ButtonOutline.vue";
 import axiosInstance from "../../../axios";
 import { fetchJobDetail } from "@/service";
 
-const { proxy } = getCurrentInstance(); 
+const { proxy } = getCurrentInstance();
 const route = useRoute();
 const jobId = route.params.id;
 
@@ -37,8 +37,8 @@ const lowonganList = ref([]);
 
 const fetchLowonganKerja = async () => {
   try {
-    const response = await axiosInstance.get("/api/position");
-    lowonganList.value = response.data;
+    const response = await axiosInstance.get("/api/careers");
+    lowonganList.value = response.data.data;
   } catch (err) {
     console.error("Gagal memuat data lowongan:", err);
   }
@@ -59,7 +59,7 @@ const formData = ref({
 const selectedFile = ref(null);
 
 const handleFileUpload = (event) => {
-  const file = event.target.files[0]; 
+  const file = event.target.files[0];
   formData.value.resume = file;
   selectedFile.value = file;
 };
@@ -99,7 +99,9 @@ const handleSubmit = async () => {
   } catch (error) {
     let errorMessage = "An error occurred";
     if (error.response?.data?.errors) {
-      errorMessage = Object.values(error.response.data.errors).flat().join("<br>");
+      errorMessage = Object.values(error.response.data.errors)
+        .flat()
+        .join("<br>");
     }
     await proxy.$swal.fire({
       icon: "error",
@@ -114,7 +116,10 @@ const handleSubmit = async () => {
 <template>
   <div class="px-[56px] md:px-[112px] dark:bg-black mb-[150px] pt-20 md:pt-16">
     <div class="flex flex-col gap-9 items-center text-center mb-[60px]">
-      <h1 v-if="jobDetail" class="font-raleway text-[30px] md:text-[50px] font-bold text-gradient">
+      <h1
+        v-if="jobDetail"
+        class="font-raleway text-[30px] md:text-[50px] font-bold text-gradient"
+      >
         {{ jobDetail.lowong_krj }}
       </h1>
       <div class="breadcrumbs">
@@ -128,7 +133,10 @@ const handleSubmit = async () => {
           </li>
           <li class="breadcrumbs-separator rtl:-rotate-[40deg]">/</li>
           <li aria-current="page">
-            <span class="bg-primary/20 !text-primary rounded-sm px-1.5 py-0.5" v-if="jobDetail">
+            <span
+              class="bg-primary/20 !text-primary rounded-sm px-1.5 py-0.5"
+              v-if="jobDetail"
+            >
               {{ jobDetail.lowong_krj }}
             </span>
           </li>
@@ -139,7 +147,10 @@ const handleSubmit = async () => {
     <div v-if="error" class="text-red-500 text-center">
       {{ error }}
     </div>
-    <div v-if="jobDetail && !loading" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div
+      v-if="jobDetail && !loading"
+      class="grid grid-cols-1 md:grid-cols-2 gap-8"
+    >
       <div class="space-y-8">
         <div>
           <h2 class="text-2xl font-bold text-primary mb-4">Ringkasan</h2>
@@ -160,7 +171,9 @@ const handleSubmit = async () => {
           </ul>
         </div>
         <div>
-          <h2 class="text-2xl font-bold text-primary mb-4">Deskripsi Pekerjaan</h2>
+          <h2 class="text-2xl font-bold text-primary mb-4">
+            Deskripsi Pekerjaan
+          </h2>
           <ul class="list-disc pl-6 space-y-2">
             <li
               v-for="(item, index) in jobDetail.ket_lowong.deskripsi"
@@ -189,22 +202,32 @@ const handleSubmit = async () => {
         <div class="space-y-4 border border-gray-300 p-[20px] rounded-2xl">
           <div class="flex gap-2">
             <span class="font-bold">Pengalaman:</span>
-            <span class="text-gray-700 dark:text-gray-100">{{ jobDetail.ket_lowong.pengalaman }}</span>
+            <span class="text-gray-700 dark:text-gray-100">{{
+              jobDetail.ket_lowong.pengalaman
+            }}</span>
           </div>
           <div class="flex gap-2">
             <span class="font-bold">Jam Kerja:</span>
-            <span class="text-gray-700 dark:text-gray-100">{{ jobDetail.ket_lowong.jam_kerja }}</span>
+            <span class="text-gray-700 dark:text-gray-100">{{
+              jobDetail.ket_lowong.jam_kerja
+            }}</span>
           </div>
           <div class="flex gap-2">
             <span class="font-bold">Hari Kerja:</span>
-            <span class="text-gray-700 dark:text-gray-100">{{ jobDetail.ket_lowong.hari_kerja }}</span>
+            <span class="text-gray-700 dark:text-gray-100">{{
+              jobDetail.ket_lowong.hari_kerja
+            }}</span>
           </div>
           <div class="flex gap-2">
             <span class="font-bold">Lokasi:</span>
-            <span class="text-gray-700 dark:text-gray-100">{{ jobDetail.ket_lowong.lokasi }}</span>
+            <span class="text-gray-700 dark:text-gray-100">{{
+              jobDetail.ket_lowong.lokasi
+            }}</span>
           </div>
         </div>
-        <div class="bg-white dark:bg-gray-800 border border-gray-300 p-6 rounded-2xl">
+        <div
+          class="bg-white dark:bg-gray-800 border border-gray-300 p-6 rounded-2xl"
+        >
           <h2 class="text-2xl font-bold text-primary mb-6">Lamar Sekarang!</h2>
           <form @submit.prevent="handleSubmit" class="space-y-4">
             <div class="space-y-2">
@@ -236,18 +259,24 @@ const handleSubmit = async () => {
             </div>
             <div class="space-y-2">
               <label class="block">Job Position</label>
-              <select 
-                v-model="formData.position" 
+              <select
+                v-model="formData.position"
                 class="w-full p-2 border-2 rounded bg-white dark:bg-transparent text-gray-900 dark:text-gray-100"
               >
-                <option value="" disabled class="text-gray-500 dark:text-gray-400">Select position</option>
-                <option 
-                  v-for="(item, index) in lowonganList" 
-                  :key="index" 
-                  :value="item"
+                <option
+                  value=""
+                  disabled
+                  class="text-gray-500 dark:text-gray-400"
+                >
+                  Select position
+                </option>
+                <option
+                  v-for="(item, index) in lowonganList"
+                  :key="index"
+                  :value="item.lowong_krj"
                   class="text-gray-900 dark:text-gray-100"
                 >
-                  {{ item }}
+                  {{ item.lowong_krj }}
                 </option>
               </select>
             </div>
@@ -266,7 +295,9 @@ const handleSubmit = async () => {
                   for="dropzone-file"
                   class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500"
                 >
-                  <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                  <div
+                    class="flex flex-col items-center justify-center pt-5 pb-6"
+                  >
                     <svg
                       class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
                       aria-hidden="true"
@@ -283,7 +314,8 @@ const handleSubmit = async () => {
                       />
                     </svg>
                     <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                      <span class="font-semibold">Klik untuk mengunggah</span> atau seret dan lepaskan
+                      <span class="font-semibold">Klik untuk mengunggah</span>
+                      atau seret dan lepaskan
                     </p>
                     <p class="text-xs text-gray-500 dark:text-gray-400">
                       Format file yang diterima: PDF, DOC, atau DOCX
@@ -298,12 +330,20 @@ const handleSubmit = async () => {
                   />
                 </label>
               </div>
-              <div v-if="selectedFile" class="mt-2 p-2 border rounded bg-gray-100 dark:bg-gray-700">
-                <p class="text-gray-700 dark:text-gray-200">File terpilih: <strong>{{ selectedFile.name }}</strong></p>
+              <div
+                v-if="selectedFile"
+                class="mt-2 p-2 border rounded bg-gray-100 dark:bg-gray-700"
+              >
+                <p class="text-gray-700 dark:text-gray-200">
+                  File terpilih: <strong>{{ selectedFile.name }}</strong>
+                </p>
               </div>
-              <p class="text-sm text-gray-500 mt-2">*Unggah CV Anda dalam format PDF, DOC, atau DOCX.</p>
+              <p class="text-sm text-gray-500 mt-2">
+                *Unggah CV Anda dalam format PDF, DOC, atau DOCX.
+              </p>
             </div>
-            <Button type="submit" class="w-full">Kirim</Button>
+            <!-- <Button type="submit" class="w-full">Kirim</Button> -->
+            <Button type="" class="w-full">Tombol tidak berfungsi, harap lewat wa</Button>
           </form>
         </div>
       </div>

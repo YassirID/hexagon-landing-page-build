@@ -141,7 +141,6 @@ onMounted(getCareerData);
           </h1>
           <Button class="mt-3 rounded-lg">
             <span class="text-xs">Apply Now</span>
-            <font-awesome-icon icon="arrow-right" />
           </Button>
         </div>
       </div>

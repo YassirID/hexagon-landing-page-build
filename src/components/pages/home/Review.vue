@@ -1,17 +1,28 @@
 <script setup>
-
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted } from "vue";
 import { fetchReview } from "@/service";
 import { Icon } from "@iconify/vue";
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import 'swiper/css';
+import 'swiper/css/effect-cards';
+import 'swiper/css/pagination';
+import { EffectCards, Pagination } from 'swiper/modules';
+
 const reviewData = ref([]);
 const isLoading = ref(true);
 const error = ref(null);
-const currentPage = ref(0);
-const isLoaded = ref(false);
 
-const totalPages = computed(() => reviewData.value?.length || 0);
-const hasNextPage = computed(() => currentPage.value < totalPages.value - 1);
-const hasPrevPage = computed(() => currentPage.value > 0);
+// For desktop swiper
+const swiperRef = ref(null);
+const activeSlideIndex = ref(0);
+
+const onSwiper = (swiper) => {
+  swiperRef.value = swiper;
+};
+
+const onSlideChange = (swiper) => {
+  activeSlideIndex.value = swiper.activeIndex;
+};
 
 const getReviewData = async () => {
   try {
@@ -34,36 +45,8 @@ const getReviewData = async () => {
     isLoading.value = false;
   }
 };
-const animatePageChange = (newPage) => {
-  isLoaded.value = false;
-  setTimeout(() => {
-    currentPage.value = newPage; 
-    isLoaded.value = true; 
-  }, 300); 
-};
 
-const nextPage = () => {
-  if (hasNextPage.value) {
-    animatePageChange(currentPage.value + 1);
-  }
-};
-
-const prevPage = () => {
-  if (hasPrevPage.value) {
-    animatePageChange(currentPage.value - 1);
-  }
-};
-
-const goToPage = (page) => {
-  if (page >= 0 && page < totalPages.value) {
-    animatePageChange(page);
-  }
-};
-
-onMounted(async () => {
-  await getReviewData();
-  isLoaded.value = true;
-});
+onMounted(getReviewData);
 
 </script>
 
@@ -90,100 +73,107 @@ onMounted(async () => {
       </div>
     </div>
     <template v-else-if="reviewData.length > 0">
-      <!-- Desktop Layout -->
-      <div class="hidden md:block">
-        <div class="flex flex-col lg:flex-row gap-[18px] mb-[18px] z-10">
-          <div class="lg:max-w-[750px] w-full flex flex-col bg-[#136ff8] rounded-[20px] shadow-lg relative">
-            <div class="p-[56px] pt-[55px]">
-              <p class="text-[16px] text-white font-normal">
-                {{ reviewData[currentPage].review }}
-              </p>
+<!-- Desktop Layout -->
+<div class="hidden md:block">
+  <div class="flex flex-col lg:flex-row gap-[18px] mb-[18px] z-10">
+    
+    <!-- Swiper Card Effect -->
+    <Swiper
+      :modules="[EffectCards]"
+      effect="cards"
+      :grab-cursor="true"
+      class="lg:max-w-[750px] w-full"
+      @swiper="onSwiper"
+      @slideChange="onSlideChange"
+    >
+      <SwiperSlide
+        v-for="(review, index) in reviewData"
+        :key="index"
+      >
+        <div class="w-full h-full flex flex-col bg-[#136ff8] rounded-[20px]  relative">
+          <div class="p-[56px] pt-[55px]">
+            <p class="text-[16px] text-white font-normal">
+              {{ review.review }}
+            </p>
+          </div>
+          <div class="p-[56px] pt-0 flex items-center">
+            <div class="flex items-center justify-center w-10 h-10 overflow-hidden rounded-full">
+              <img :src="review.foto" :alt="review.nama" class="object-cover w-full h-full" @error="$event.target.src = '/placeholder-avatar.png'" />
             </div>
-            <div class="p-[56px] pt-0 flex items-center">
-              <div class="flex items-center justify-center w-10 h-10 overflow-hidden rounded-full">
-                <img src="../../../../Logo.png" :alt="reviewData[currentPage].nama" class="object-cover w-full h-full" />
-              </div>
-              <div class="ml-4">
-                <h3 class="text-white">{{ reviewData[currentPage].nama }}</h3>
-                <p class="font-normal text-white">{{ reviewData[currentPage].dari }}</p>
-              </div>
-            </div>
-            <div class="absolute bottom-0 right-0 flex items-center justify-center">
-              <img src="@/assets/Group 11.svg" alt="Icon" class="h-13" />
-            </div>
-            <div class="absolute bottom-0 right-0 flex gap-2 transition-opacity duration-300 opacity-0 hover:opacity-100">
-              <img src="@/assets/Large unit.svg" alt="Large Unit Icon" class="h-[200px]" />
+            <div class="ml-4">
+              <h3 class="text-white">{{ review.nama }}</h3>
+              <p class="font-normal text-white">{{ review.dari }}</p>
             </div>
           </div>
-          
+          <div class="absolute bottom-0 right-0 flex items-center justify-center">
+            <img src="@/assets/Group 11.svg" alt="Icon" class="h-13" />
+          </div>
+          <div class="absolute bottom-0 right-0 flex gap-2 transition-opacity duration-300 opacity-0 hover:opacity-100">
+            <img src="@/assets/Large unit.svg" alt="Large Unit Icon" class="h-[200px]" />
+          </div>
+        </div>
+      </SwiperSlide>
+    </Swiper>
 
-<div class="relative w-full h-full flex items-center justify-center">
-  <div class="max-w-[450px] w-full flex flex-col items-center justify-center 
-              rounded-[16px] p-[5px] relative 
-              md:rotate-90 xl:rotate-0
-              h-full">
-    
-    <div class="z-20 flex flex-col items-center gap-2">
-      <img src="@/assets/Top arrow.svg"
-           @click="prevPage"
-           :disabled="currentPage === 0"
-           alt="Previous"
-           class="z-30 cursor-pointer" />
+    <!-- Custom Scrollbar Vertical -->
+    <div class="relative w-full h-full flex items-center justify-center">
+      <div class="max-w-[450px] w-full flex flex-col items-center justify-center 
+                  rounded-[16px] p-[5px] relative 
+                  md:rotate-90 xl:rotate-0
+                  h-full">
+        <div class="z-20 flex flex-col items-center gap-2">
+          <img src="@/assets/Top arrow.svg" @click="swiperRef?.slidePrev()"
+               alt="Previous"
+               class="z-30 cursor-pointer" />
 
-      <div class="flex flex-col space-y-2">
-        <div
-          v-for="(review, index) in reviewData"
-          :key="index"
-          @click="goToPage(index)"
-          :class="[
-            'w-1 cursor-pointer rounded-full transition-all duration-1000',
-            currentPage === index ? 'bg-blue-500 h-16' : 'bg-blue-200 h-8'
-          ]"
-        ></div>
+          <div class="flex flex-col space-y-2">
+            <div
+              v-for="(_, index) in reviewData"
+              :key="index"
+              :class="[
+                'w-1 cursor-pointer rounded-full transition-all duration-1000',
+                activeSlideIndex === index ? 'bg-blue-500 h-16' : 'bg-blue-200 h-8'
+              ]"
+              @click="swiperRef?.slideTo(index)"
+            ></div>
+          </div>
+
+          <img src="@/assets/scroll.svg" @click="swiperRef?.slideNext()"
+               alt="Next"
+               class="z-30 cursor-pointer" />
+        </div>
       </div>
-      <img src="@/assets/scroll.svg"
-           @click="nextPage"
-           :disabled="currentPage === totalPages - 1"
-           alt="Next"
-           class="z-30 cursor-pointer" />
     </div>
   </div>
 </div>
 
-        </div>
-      </div>
-      <div class="md:hidden block">
-        <div class="flex flex-col items-center">
-          <div class="w-full max-w-[350px] bg-[#136ff8] rounded-[20px] shadow-lg relative p-6">
-            <p class="text-[16px] text-white font-normal line-clamp-5">
-              {{ reviewData[currentPage].review }}
-            </p>
-            <div class="flex items-center mt-4">
-              <div class="flex items-center justify-center w-10 h-10 overflow-hidden rounded-full">
-                <img :src="reviewData[currentPage].foto" :alt="reviewData[currentPage].nama" class="object-cover w-full h-full"
-                     @error="$event.target.src = '/placeholder-avatar.png'" />
-              </div>
-              <div class="ml-4">
-                <h3 class="text-white">{{ reviewData[currentPage].nama }}</h3>
-                <p class="font-normal text-white">{{ reviewData[currentPage].dari }}</p>
+      <!-- Mobile Layout -->
+      <div class="block md:hidden">
+        <Swiper
+          :modules="[Pagination]"
+          :pagination="{ clickable: true }"
+          class="w-full"
+        >
+          <SwiperSlide
+            v-for="(review, index) in reviewData"
+            :key="index"
+          >
+            <div class="w-full max-w-[350px] bg-[#136ff8] rounded-[20px] shadow-lg relative p-6 mx-auto mb-10">
+              <p class="text-[16px] text-white font-normal line-clamp-5 min-h-[120px]">
+                {{ review.review }}
+              </p>
+              <div class="flex items-center mt-4">
+                <div class="flex items-center justify-center w-10 h-10 overflow-hidden rounded-full">
+                  <img :src="review.foto" :alt="review.nama" class="object-cover w-full h-full" @error="$event.target.src = '/placeholder-avatar.png'" />
+                </div>
+                <div class="ml-4">
+                  <h3 class="text-white">{{ review.nama }}</h3>
+                  <p class="font-normal text-white">{{ review.dari }}</p>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="flex items-center justify-center gap-4 mt-6">
-            <button @click="prevPage" :disabled="currentPage === 0" class="p-2 bg-gray-200 rounded-full hover:bg-gray-300">
-              <Icon icon="line-md:arrow-left" class="w-4 h-4" />
-            </button>
-            <div class="flex gap-2">
-              <button v-for="(review, index) in reviewData" :key="index" @click="goToPage(index)"
-                      :class="{ 'bg-blue-500': currentPage === index, 'bg-gray-300': currentPage !== index }"
-                      class="w-3 h-3 rounded-full transition-colors duration-200">
-              </button>
-            </div>
-            <button @click="nextPage" :disabled="currentPage === totalPages - 1" class="p-2 bg-gray-200 rounded-full hover:bg-gray-300">
-              <Icon icon="line-md:arrow-right" class="w-4 h-4" />
-            </button>
-          </div>
-        </div>
+          </SwiperSlide>
+        </Swiper>
       </div>
     </template>
     <div v-else class="flex justify-center items-center min-h-[300px] text-gray-500 dark:text-gray-400">
@@ -193,6 +183,15 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+
+:deep(.swiper-pagination-bullet) {
+  background-color: #d1d5db; /* gray-300 */
+  opacity: 1;
+}
+
+:deep(.swiper-pagination-bullet-active) {
+  background-color: #3b82f6; /* blue-500 */
+}
 
 .active-dot {
   content: url("@/assets/Active dot.svg");

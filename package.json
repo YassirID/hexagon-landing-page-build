@@ -16,7 +16,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/vue-fontawesome": "^3.0.8",
     "@selemondev/vue3-marquee": "^0.0.8",
-    "@splinetool/runtime": "^1.10.31",
+    "@splinetool/runtime": "^1.10.38",
     "@tailwindcss/typography": "^0.5.16",
     "@vueuse/core": "^12.4.0",
     "@vueuse/motion": "^2.2.6",
@@ -27,6 +27,8 @@
     "lodash": "^4.17.21",
     "pinia": "^2.2.6",
     "sweetalert2": "^11.17.2",
+    "swiper": "^11.2.10",
+    "three": "^0.178.0",
     "vue": "^3.5.12",
     "vue-router": "^4.4.5",
     "vue-sweetalert2": "^5.0.11"

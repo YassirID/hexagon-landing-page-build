@@ -1,5 +1,6 @@
 <script setup>
 import LatestNews from "@/components/News/LatestNews.vue";
+import BlogPost from "../../News/BlogPost.vue";
 </script>
 
 <template>
@@ -9,7 +10,7 @@ import LatestNews from "@/components/News/LatestNews.vue";
         <span class="inline text-3xl font-semibold text-[#212529] dark:text-white">Latest Posts</span>
       </div>
     </div>
-    <LatestNews></LatestNews>
+    <latest-news></latest-news>
   </div>
 </template>
 

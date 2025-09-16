@@ -1,6 +1,10 @@
 <script setup>
 import Button from '@/components/button/Button.vue';
 import ButtonOutline from '@/components/button/ButtonOutline.vue';
+
+const openWhatsApp = () => {
+  window.open('https://wa.me/6281222181823', '_blank');
+};
 </script>
 
 <template>
@@ -15,13 +19,13 @@ import ButtonOutline from '@/components/button/ButtonOutline.vue';
             </p>
             <div class="hidden md:block">
                 <div class="flex flex-col sm:flex-row gap-[14px]">
-                    <ButtonOutline>
+                    <ButtonOutline @click="openWhatsApp">
                         <span class="flex items-center gap-2">
                         <span class="h-2 w-2 bg-light-secondary block rounded-full"></span>
                         <span>Contact Us</span>
                         </span>
                     </ButtonOutline>
-                    <Button @click="$router.push({ name: 'contact' })">
+                    <Button @click="openWhatsApp">
                     <span class="flex items-center gap-2">
                         <span class="h-2 w-2 bg-white block rounded-full"></span>
                         <span class="dark:text-white">Request a Consultation</span>

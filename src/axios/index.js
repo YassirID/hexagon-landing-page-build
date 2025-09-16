@@ -1,9 +1,9 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  // baseURL: "https://api.hexagon.co.id/",
-  baseURL: "https://api.hexagon.co.id/", 
-  withCredentials: true, 
+  // baseURL: "https://content.hexagon.co.id/",
+  baseURL: "https://content.hexagon.co.id/",
+  withCredentials: true,
 });
 
 export default axiosInstance;

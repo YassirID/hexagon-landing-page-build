@@ -1,61 +1,40 @@
-import { defineStore } from 'pinia';
-import axiosInstance from "@/axios"; 
+import { defineStore } from "pinia";
+import axiosInstance from "@/axios";
 
-export const fetchAboutData = async () => {
+const fetchMainData = async () => {
   try {
     const response = await axiosInstance.get("/api/main");
     if (response.data && response.data.data) {
       return response.data.data;
     } else {
-      throw new Error("No data found in response");
+      // The error is logged, but we return null to allow the component to handle it gracefully.
+      console.error("No data found in /api/main response:", response);
+      return null;
     }
   } catch (error) {
-    console.error("Error fetching about data:", error);
-    return { error: "Failed to fetch about data. Please try again later." };
+    console.error("Error fetching /api/main data:", error);
+    return { error: "Failed to fetch main data. Please try again later." };
   }
 };
-export const fetchContact = async () => {
-  try {
-    const response = await axiosInstance.get("/api/contact");
-    if (response.data) {
-      return response.data;
-    } else {
-      throw new Error("No data found in response");
-    }
-  } catch (error) {
-    console.error("Error fetching about data:", error);
-    return { error: "Failed to fetch about data. Please try again later." };
-  }
-};
-export const fetchBenefits = async () => {
-  try {
-    const response = await axiosInstance.get("/api/benefits");
-    if (response.data) {
-      return response.data;
-    } else {
-      throw new Error("No data found in response");
-    }
-  } catch (error) {
-    console.error("Error fetching about data:", error);
-    return { error: "Failed to fetch about data. Please try again later." };
-  }
-};
+export const fetchAboutData = fetchMainData;
+export const fetchContact = fetchMainData;
+
 export const fetchNews = async () => {
   try {
-    const response = await axiosInstance.get("/api/News");
+    const response = await axiosInstance.get("/api/news");
     if (response.data) {
       return response.data;
     } else {
       throw new Error("No data found in response");
     }
   } catch (error) {
-    console.error("Error fetching about data:", error);
-    return { error: "Failed to fetch about data. Please try again later." };
+    console.error("Error fetching news data:", error);
+    return { error: "Failed to fetch news data. Please try again later." };
   }
 };
 export const fetchReview = async () => {
   try {
-    const response = await axiosInstance.get("/api/review");
+    const response = await axiosInstance.get("/api/reviews");
     if (response.data) {
       return response.data;
     } else {
@@ -63,47 +42,48 @@ export const fetchReview = async () => {
     }
   } catch (error) {
     console.error("Error fetching about data:", error);
-    return { error: "Failed to fetch about data. Please try again later." };
+    return { error: "Failed to fetch review data. Please try again later." };
   }
 };
-export const fetchVisionMission = async (type) => {
+export const fetchVisionMission = async () => {
   try {
-    const response = await axiosInstance.get("/api/vision_mission", {
-        params: { type },
-    });
-    if (response.data && response.data.data) {
-      return response.data.data;
+    const response = await axiosInstance.get("/api/vision-mission");
+    if (response.data) {
+      return response.data;
     } else {
-      throw new Error("No data found in response");
+      return { vision: "", mission: "" };
     }
   } catch (error) {
-    console.error("Error fetching about data:", error);
-    return { error: "Failed to fetch about data. Please try again later." };
+    console.error("Error fetching vision/mission data:", error);
+    return {
+      vision: "Failed to load vision.",
+      mission: "Failed to load mission.",
+    };
   }
 };
 export const fetchCareer = async (type) => {
   try {
-    const response = await axiosInstance.get("/api/Career", {
+    const response = await axiosInstance.get("/api/careers", {
       params: { type },
     });
 
     if (response.data) {
-      return response.data;
+      return response.data.data || []; // Ensure it returns an array
     } else {
-      throw new Error("No data found in response");
+      return [];
     }
   } catch (error) {
-    console.error("Error fetching about data:", error);
-    return { error: "Failed to fetch about data. Please try again later." };
+    console.error("Error fetching career data:", error);
+    return [];
   }
 };
 
 export const fetchJobDetail = async (id) => {
   try {
-    const response = await axiosInstance.get(`/api/Career/${id}`);
+    const response = await axiosInstance.get(`/api/careers/${id}`);
 
-    if (response.data) {
-      return response.data;
+    if (response.data && response.data.data) {
+      return response.data.data;
     } else {
       throw new Error("No data found in response");
     }
@@ -113,68 +93,72 @@ export const fetchJobDetail = async (id) => {
   }
 };
 
-
-export const fetchValue = async (type) => {
+export const fetchValue = async () => {
   try {
-    const response = await axiosInstance.get("/api/values", {
-        params: { type },
-    });
+    const response = await axiosInstance.get("/api/values");
     if (response.data) {
       return response.data;
     } else {
-      throw new Error("No data found in response");
+      return { ourValues: [], workValues: [] };
     }
   } catch (error) {
-    console.error("Error fetching about data:", error);
-    return { error: "Failed to fetch about data. Please try again later." };
+    console.error("Error fetching value data:", error);
+    return { ourValues: [], workValues: [] };
   }
 };
 export const fetchOurClient = async (status = null) => {
   try {
-    const response = await axiosInstance.get("/api/abt_client", {
-      params: {
-        status: status,
-      },
-    });
-    if (response.data && response.data) {
-      return response.data;
+    const params = {};
+    if (status !== null) {
+      params.status = status;
+    }
+    const response = await axiosInstance.get("/api/clients", { params });
+    if (response.data && Array.isArray(response.data.data)) {
+      // Memperbaiki URL gambar dari http menjadi https
+      return response.data.data.map((client) => ({
+        ...client,
+        foto_client: client.foto_client.replace(/^http:\/\//i, "https://"),
+      }));
     } else {
       throw new Error("No data found in response");
     }
   } catch (error) {
-    console.error("Error fetching about data:", error);
-    return { error: "Failed to fetch about data. Please try again later." };
+    console.error("Error fetching client data:", error);
+    return { error: "Failed to fetch client data. Please try again later." };
   }
 };
 export const fetchGallery = async (type) => {
   try {
-    const response = await axiosInstance.get("/api/gallery");
+    const response = await axiosInstance.get("/api/galleries");
     if (response.data && response.data.data) {
       return response.data.data;
     } else {
       throw new Error("No data found in response");
     }
   } catch (error) {
-    console.error("Error fetching about data:", error);
-    return { error: "Failed to fetch about data. Please try again later." };
+    console.error("Error fetching gallery data:", error);
+    return { error: "Failed to fetch gallery data. Please try again later." };
   }
 };
 
-export const usePortofolioStore = defineStore("portofolio", {
+export const usePortofolioStore = defineStore("portfolios", {
   state: () => ({
     projects: [],
-    projectDetails: null, 
+    projectDetails: null,
   }),
   actions: {
     async fetchProjects() {
       try {
-        const response = await axiosInstance.get("/api/Portofolio");
+        const response = await axiosInstance.get("/api/portfolios");
         this.projects = response.data.data.map((item) => ({
-          id: item.id,
-          tag: item.Kategori,
+          id: item.portofolio_id,
+          tag: item.category?.nama_kategori || "Uncategorized",
           title: item.judul_porto,
           description: item.ket_porto,
-          image: item.images.length ? item.images[0] : "",
+          image:
+            item.photos?.length && item.photos[0].nama_foto
+              ? `https://content.hexagon.co.id/storage/${item.photos[0].nama_foto}`
+              : "",
           urlYoutube: item.url_youtube,
           alt: item.judul_porto,
         }));
@@ -184,18 +168,30 @@ export const usePortofolioStore = defineStore("portofolio", {
     },
     async fetchProjectById(id) {
       try {
-        const response = await axiosInstance.get(`/api/Portofolio/${id}`);
-        this.projectDetails = {
-          project: response.data.judul_porto,
-          image: response.data.images.length ? response.data.images[0] : "",
-          link: response.data.url_youtube,
-          tags: response.data.Kategori.split(","),
-          content: response.data.ket_porto,
-        };
+        const response = await axiosInstance.get(`/api/portfolios/${id}`);
+
+        if (response.data && response.data.data) {
+          const projectData = Array.isArray(response.data.data)
+            ? response.data.data[0]
+            : response.data.data;
+          this.projectDetails = {
+            project: projectData.judul_porto,
+            image: projectData.photos?.length
+              ? `https://content.hexagon.co.id/storage/${projectData.photos[0].nama_foto}`
+              : "",
+            link: projectData.url_youtube,
+            tags: projectData.category
+              ? [projectData.category.nama_kategori]
+              : [],
+            content: projectData.ket_porto,
+          };
+        } else {
+          throw new Error("Invalid data structure received from API");
+        }
       } catch (error) {
         console.error("Error fetching project details:", error);
+        this.projectDetails = null; // Reset state on error
       }
     },
   },
 });
-

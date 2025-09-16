@@ -6,7 +6,7 @@ import Body from '@/components/pages/portofolio/Body.vue';
 </script>
 
 <template>
-    <div class=" dark:bg-black">
+    <div class="dark:bg-black min-h-screen">
         <Header />
         <Body />
         <div class="pb-20"></div>

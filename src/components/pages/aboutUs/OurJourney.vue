@@ -1,5 +1,5 @@
 <template>
-  <div class="h-[500px] flex flex-col pt-[450px] xl:pt-72 xl:flex-row items-center justify-center gap-10 md:mx-28" id="our-journey">
+  <div class="h-[500px] flex flex-col pt-10 md:pt-[450px] xl:pt-72 xl:flex-row items-center justify-center gap-10 md:mx-28" id="our-journey">
     <div v-if="aboutData" class="w-full xl:w-1/2 space-y-2.5">
       <div class="flex items-center gap-2.5 mt-8">
         <div class="w-8 h-1 bg-light-primary"></div>

@@ -18,7 +18,7 @@ onMounted(async () => {
     <Loading :isVisible="isLoading" v-if="isLoading" />
 
     <Transition name="page-transition" mode="out-in">
-      <div v-if="!isLoading" class="mx-auto dark:bg-black">
+      <div v-if="!isLoading" class="dark:bg-black">
         <Navbar />
         <div class="pt-16"></div>
 

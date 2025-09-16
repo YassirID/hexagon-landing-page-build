@@ -1,10 +1,11 @@
 <script setup>
-import Button from '@/components/button/Button.vue';
-import ButtonOutline from '@/components/button/ButtonOutline.vue';
+import Button from "@/components/button/Button.vue";
+import ButtonOutline from "@/components/button/ButtonOutline.vue";
 import { ref, onMounted, computed, onUnmounted } from "vue";
 import axiosInstance from "@/axios";
-import { Icon } from '@iconify/vue';
+import { Icon } from "@iconify/vue";
 const cardItems = ref([]);
+const currentPage = ref(1);
 const totalPages = ref(1);
 const totalItems = ref(0);
 const activeTag = ref("All");
@@ -20,24 +21,29 @@ function checkScreenSize() {
 async function fetchProjectData(page = 1) {
   try {
     isLoading.value = true;
+    const perPage = isMobile.value ? 3 : 5;
     const params = new URLSearchParams({
       page: page,
       perpage: perPage,
-      ...(activeTag.value !== 'All' && { tag: activeTag.value })
+      ...(activeTag.value !== "All" && { tag: activeTag.value }),
     });
-    const response = await axiosInstance.get(`/api/Portofolio?${params}`);
-    
+    const response = await axiosInstance.get(`/api/portfolios?${params}`);
+
     if (response.data) {
-      totalPages.value = Math.ceil(response.data.total / response.data.per_page);
+      totalPages.value = Math.ceil(
+        response.data.total / response.data.per_page
+      );
       currentPage.value = response.data.current_page;
       totalItems.value = response.data.total;
-      
+
       cardItems.value = response.data.data.map((item) => ({
-        id: item.id,
-        tag: item.Kategori,
+        id: item.portofolio_id,
+        tag: item.category?.nama_kategori || "Uncategorized",
         title: item.judul_porto,
         description: item.ket_porto,
-        image: item.images.length ? item.images[0] : "",
+        image: item.photos?.length
+          ? `https://content.hexagon.co.id/storage/${item.photos[0].nama_foto}`
+          : "",
         urlYoutube: item.url_youtube,
         alt: item.judul_porto,
       }));
@@ -53,7 +59,9 @@ async function fetchProjectData(page = 1) {
   }
 }
 function extractTags(items) {
-  const allTags = items.map(item => item.Kategori).filter(Boolean);
+  const allTags = items
+    .map((item) => item.category?.nama_kategori)
+    .filter(Boolean);
   const uniqueTags = [...new Set(allTags)];
   tags.value = uniqueTags;
 }
@@ -73,14 +81,13 @@ const visiblePages = computed(() => {
   let last = 0;
   for (const n of range) {
     if (last + 1 < n) {
-      result.push(-1); 
+      result.push(-1);
     }
     result.push(n);
     last = n;
   }
   return result;
 });
-
 
 function nextPage() {
   if (currentPage.value < totalPages.value) {
@@ -106,20 +113,28 @@ function setActiveTag(tag) {
   fetchProjectData(1);
 }
 
+window.addEventListener("resize", checkScreenSize);
 
-window.addEventListener('resize', checkScreenSize);
-
+onMounted(() => {
   checkScreenSize();
   fetchProjectData();
 });
 </script>
 
 <template>
-  <div id="portofolio" class="flex flex-col items-center px-4 md:px-[112px] dark:bg-black">
+  <div
+    id="portofolio"
+    class="flex flex-col items-center px-4 md:px-[112px] dark:bg-black"
+  >
     <div v-if="cardItems.length === 0" class="text-center py-8">
-      <p class="text-gray-600 dark:text-gray-400">No portfolios found for the selected category.</p>
+      <p class="text-gray-600 dark:text-gray-400">
+        No portfolios found for the selected category.
+      </p>
     </div>
-    <div v-else class="grid grid-cols-1 gap-3.5 md:grid-cols-2 lg:grid-cols-3 w-full">
+    <div
+      v-else
+      class="grid grid-cols-1 gap-3.5 md:grid-cols-2 lg:grid-cols-3 w-full"
+    >
       <div
         v-for="card in cardItems"
         :key="card.id"
@@ -134,10 +149,14 @@ window.addEventListener('resize', checkScreenSize);
           <span class="px-3 py-2 text-xs rounded bg-blue-50 dark:bg-gray-800">
             {{ card.tag }}
           </span>
-          <h1 class="text-gray-800 font-raleway text-2xl md:text-[32px] font-semibold dark:text-white line-clamp-1">
+          <h1
+            class="text-gray-800 font-raleway text-2xl md:text-[32px] font-semibold dark:text-white line-clamp-1"
+          >
             {{ card.title }}
           </h1>
-          <p class="text-[14px] md:text-[16px] text-gray-600 dark:text-gray-400 line-clamp-3">
+          <p
+            class="text-[14px] md:text-[16px] text-gray-600 dark:text-gray-400 line-clamp-3"
+          >
             {{ card.description }}
           </p>
           <router-link
@@ -154,7 +173,11 @@ window.addEventListener('resize', checkScreenSize);
         @click="prevPage"
         :disabled="currentPage === 1"
         class="px-3 py-1 border rounded-lg dark:bg-transparent"
-        :class="currentPage === 1 ? 'bg-gray-100 text-gray-400 dark:text-white' : 'bg-white hover:bg-gray-50'"
+        :class="
+          currentPage === 1
+            ? 'bg-gray-100 text-gray-400 dark:text-white'
+            : 'bg-white hover:bg-gray-50'
+        "
       >
         Previous
       </button>
@@ -164,7 +187,11 @@ window.addEventListener('resize', checkScreenSize);
           v-else
           @click="goToPage(page)"
           class="px-3 py-1 border rounded-lg dark:bg-transparent"
-          :class="currentPage === page ? 'bg-blue-600 text-white' : 'bg-white hover:bg-gray-50'"
+          :class="
+            currentPage === page
+              ? 'bg-blue-600 text-white'
+              : 'bg-white hover:bg-gray-50'
+          "
         >
           {{ page }}
         </button>
@@ -173,7 +200,11 @@ window.addEventListener('resize', checkScreenSize);
         @click="nextPage"
         :disabled="currentPage === totalPages"
         class="px-3 py-1 border rounded-lg dark:bg-transparent"
-        :class="currentPage === totalPages ? 'bg-gray-100 text-gray-400 dark:text-white' : 'bg-white hover:bg-gray-50'"
+        :class="
+          currentPage === totalPages
+            ? 'bg-gray-100 text-gray-400 dark:text-white'
+            : 'bg-white hover:bg-gray-50'
+        "
       >
         Next
       </button>
@@ -182,14 +213,40 @@ window.addEventListener('resize', checkScreenSize);
 </template>
 
 <style>
-.hover\:bg-blue-500:hover { background-color: #3b82f6; }
-.hover\:text-white:hover { color: white; }
-.hover\:shadow-lg:hover { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
-.hover\:scale-105:hover { transform: scale(1.05); }
-.hover\:text-white:hover p, .hover\:text-white:hover h1 { color: white; }
-.opacity-0 { opacity: 0; }
-.opacity-100 { opacity: 1; }
+.hover\:bg-blue-500:hover {
+  background-color: #3b82f6;
+}
+.hover\:text-white:hover {
+  color: white;
+}
+.hover\:shadow-lg:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+.hover\:scale-105:hover {
+  transform: scale(1.05);
+}
+.hover\:text-white:hover p,
+.hover\:text-white:hover h1 {
+  color: white;
+}
+.opacity-0 {
+  opacity: 0;
+}
+.opacity-100 {
+  opacity: 1;
+}
 
-.line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
-.line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 </style>

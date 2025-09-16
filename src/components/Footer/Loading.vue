@@ -19,36 +19,38 @@
 
     <!-- HEXATECH Branding -->
      <div class="absolute flex bottom-20 w-[15ch]  text-3xl font-extrabold tracking-[0.3em] z-10 ">
-
-   
-
     <!-- Typewriter Text -->
     <p
       class="text-nowrap overflow-hidden text-blue-600 typewriter " 
     >
-      
   <span class="content">HEXAGON INC.</span>
     </p>
-    
   </div>
   </div>  
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
 
+const showImage = ref(false)
+const showText = ref(false)
 
-function randomParticleStyle() {
-  const top = Math.random() * 100
-  const left = Math.random() * 100
-  const delay = Math.random() * 5
-  const duration = 3 + Math.random() * 3
-  return {
-    top: `${top}%`,
-    left: `${left}%`,
-    animationDelay: `${delay}s`,
-    animationDuration: `${duration}s`
-  }
-}
+onMounted(() => {
+  setTimeout(() => {
+    showImage.value = true
+  }, 1300)
+
+  setTimeout(() => {
+    showText.value = true
+  }, 2500)
+})
+
+const randomParticleStyle = () => ({
+  top: `${Math.random() * 100}%`,
+  left: `${Math.random() * 100}%`,
+  animationDuration: `${2 + Math.random() * 3}s`,
+  animationDelay: `${Math.random() * 5}s`,
+})
 </script>
 
 <style scoped>

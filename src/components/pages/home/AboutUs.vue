@@ -2,6 +2,13 @@
 import Button from '@/components/button/Button.vue';
 import ButtonOutline from '@/components/button/ButtonOutline.vue';
 import { Icon } from "@iconify/vue";
+
+const props = defineProps({
+    showServicesDetailButton: {
+        type: Boolean,
+        default: true,
+    },
+});
 </script>
 
 <template>
@@ -21,7 +28,7 @@ import { Icon } from "@iconify/vue";
                         <span>More About Us</span>
                         </span>
                     </Button>
-                    <ButtonOutline @click="$router.push({ name: 'services' })">
+                    <ButtonOutline v-if="props.showServicesDetailButton" @click="$router.push({ name: 'services' })">
                         <span class="block w-2 h-2 rounded-full bg-light-secondary"></span>
                         <span>Services Detail</span>
                     </ButtonOutline>
@@ -195,6 +202,12 @@ import { Icon } from "@iconify/vue";
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
     padding-bottom: 10px;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.mobile-scroll-container::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, and Opera */
 }
 
 .mobile-scroll-content {

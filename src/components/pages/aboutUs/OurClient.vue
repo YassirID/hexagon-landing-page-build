@@ -183,11 +183,24 @@ const getData = async () => {
   try {
     const clients = await fetchOurClient(1);
     ourClientData.value = clients || [];
+    // Check if the response is not an error object before assigning
+    if (clients && !clients.error) {
+      ourClientData.value = clients;
+    } else {
+      console.error("Failed to fetch clients:", clients?.error);
+    }
 
     const media = await fetchOurClient(0);
     ourMediaData.value = media || [];
 
     mediaMarquees.value = chunkArray(ourMediaData.value, 20);
+    // Check if the response is not an error object before assigning
+    if (media && !media.error) {
+      ourMediaData.value = media;
+      mediaMarquees.value = chunkArray(ourMediaData.value, 20);
+    } else {
+      console.error("Failed to fetch media:", media?.error);
+    }
   } catch (error) {
     console.error("Terjadi kesalahan saat mengambil data:", error);
   }

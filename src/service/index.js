@@ -48,16 +48,25 @@ export const fetchReview = async () => {
 export const fetchVisionMission = async () => {
   try {
     const response = await axiosInstance.get("/api/vision-mission");
-    if (response.data) {
-      return response.data;
+    if (response.data && Array.isArray(response.data.data)) {
+      const vision =
+        response.data.data.find((item) => item.type === 1)?.value || "";
+      const mission =
+        response.data.data.find((item) => item.type === 2)?.value || "";
+      return { vision, mission };
     } else {
-      return { vision: "", mission: "" };
+      console.error(
+        "Invalid data structure for vision-mission:",
+        response.data
+      );
+      return { vision: "No vision data", mission: "No mission data" };
     }
   } catch (error) {
     console.error("Error fetching vision/mission data:", error);
     return {
       vision: "Failed to load vision.",
       mission: "Failed to load mission.",
+      error: true,
     };
   }
 };
@@ -96,14 +105,17 @@ export const fetchJobDetail = async (id) => {
 export const fetchValue = async () => {
   try {
     const response = await axiosInstance.get("/api/values");
-    if (response.data) {
-      return response.data;
+    if (response.data && Array.isArray(response.data.data)) {
+      const ourValues = response.data.data.filter((item) => item.type === 1);
+      const workValues = response.data.data.filter((item) => item.type === 2);
+      return { ourValues, workValues };
     } else {
+      console.error("Invalid data structure for values:", response.data);
       return { ourValues: [], workValues: [] };
     }
   } catch (error) {
     console.error("Error fetching value data:", error);
-    return { ourValues: [], workValues: [] };
+    return { ourValues: [], workValues: [], error: true };
   }
 };
 export const fetchOurClient = async (status = null) => {
@@ -114,10 +126,10 @@ export const fetchOurClient = async (status = null) => {
     }
     const response = await axiosInstance.get("/api/clients", { params });
     if (response.data && Array.isArray(response.data.data)) {
-      // Memperbaiki URL gambar dari http menjadi https
+      // Memperbaiki URL gambar dari relatif menjadi absolut
       return response.data.data.map((client) => ({
         ...client,
-        foto_client: client.foto_client.replace(/^http:\/\//i, "https://"),
+        foto_client: `https://content.hexagon.co.id/storage/${client.foto_client}`,
       }));
     } else {
       throw new Error("No data found in response");
@@ -130,8 +142,12 @@ export const fetchOurClient = async (status = null) => {
 export const fetchGallery = async (type) => {
   try {
     const response = await axiosInstance.get("/api/galleries");
-    if (response.data && response.data.data) {
-      return response.data.data;
+    if (response.data && Array.isArray(response.data.data)) {
+      // Memperbaiki URL gambar dari relative menjadi absolute
+      return response.data.data.map((gallery) => ({
+        ...gallery,
+        image: `https://content.hexagon.co.id/storage/${gallery.image}`,
+      }));
     } else {
       throw new Error("No data found in response");
     }
@@ -195,3 +211,22 @@ export const usePortofolioStore = defineStore("portfolios", {
     },
   },
 });
+
+export const fetchTeams = async () => {
+  try {
+    const response = await axiosInstance.get("/api/teams");
+    if (response.data && Array.isArray(response.data.data)) {
+      // Memperbaiki URL gambar dari relative menjadi absolute
+      return response.data.data.map((team) => ({
+        ...team,
+        foto_orang: `https://content.hexagon.co.id/storage/${team.foto_orang}`,
+      }));
+    } else {
+      console.error("Invalid data structure for teams:", response.data);
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching teams data:", error);
+    return { error: "Failed to fetch teams data. Please try again later." };
+  }
+};

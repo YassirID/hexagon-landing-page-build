@@ -259,12 +259,12 @@ const getVisionMission = async () => {
       fetchValue(),
     ]);
 
-    const processValue = (values = []) =>
-      Array.isArray(values)
+    const processValue = (values) =>
+      Array.isArray(values) && values.length > 0
         ? values.map((item) => {
             const [title, subtitle] = (item.value || "").split("|");
             return {
-              title: title?.trim() || "",
+              title: title?.trim() || "No Title",
               subtitle: subtitle?.trim() || "",
             };
           })
@@ -289,21 +289,21 @@ const getVisionMission = async () => {
 const items = computed(() => [
   {
     title: "Our Vision",
-    content: data.value.vision || "Vision data is loading...",
+    content: data.value.vision,
     image: new URL("@/assets/about-us/ourVision.png", import.meta.url).href,
   },
   {
     title: "Our Mission",
-    content: data.value.mission || "Mission data is loading...",
+    content: data.value.mission,
     image: new URL("@/assets/about-us/ourMission.png", import.meta.url).href,
   },
   {
     title: "Work Values",
-    content: data.value.workValue || "Work Values data is loading...",
+    content: data.value.workValue,
   },
   {
     title: "Our Values",
-    content: data.value.ourValue || "Our Values data is loading...",
+    content: data.value.ourValue,
   },
 ]);
 
